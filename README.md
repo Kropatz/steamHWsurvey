@@ -1071,3 +1071,37 @@ $${\color{#DB4105} HalfLife \space 3 \space confirmed \space\space\space}$$
 
 <br/>
 
+
+## Linux: Penetration by Language Group 
+
+ Of all Steam users in a given language group, what % use Linux. Computed as P(Linux|language) = P(language|Linux) * P(Linux) / P(language). Total Linux marketshare shown in grey as reference (note: Mermaid xychart-beta does not support dashed lines). 
+
+```mermaid
+---
+config:
+    xyChart:
+        width: 1400
+        height: 500
+
+    themeVariables:
+        xyChart:
+            plotColorPalette: "#808080,#51a8a6,#f92800,#f9a900"
+
+---
+
+xychart-beta
+    title "Linux penetration by language group: of all [language] Steam users, % on Linux"
+    x-axis [17Q1, 17Q2, 17Q3, 17Q4, 18Q1, 18Q2, 18Q3, 18Q4, 19Q1, 19Q2, 19Q3, 19Q4, 20Q1, 20Q2, 20Q3, 20Q4, 21Q1, 21Q2, 21Q3, 21Q4, 22Q1, 22Q2, 22Q3, 22Q4, 23Q1, 23Q2, 23Q3, 23Q4, 24Q1, 24Q2, 24Q3, 24Q4, 25Q1, 25Q2, 25Q3, 25Q4, 26Q1]
+    y-axis "%" 
+    line [0.963, 0.8423, 0.7295, 0.3467, 0.3398, 0.5935, 0.6636, 0.7792, 0.7991, 0.8058, 0.8068, 0.8207, 0.91, 0.903, 0.8788, 0.8208, 0.8494, 0.8395, 1.0026, 1.1013, 0.9542, 1.117, 1.2395, 1.4386, 1.1854, 1.3224, 1.7839, 1.7184, 1.879, 2.0876, 1.971, 1.9549, 1.9352, 2.4977, 2.7344, 3.2606, 2.7246]
+    line [1.7616, 1.7434, 1.6849, 1.6704, 1.6118, 1.4019, 1.4892, 1.7042, 1.836, 1.762, 1.7087, 1.7726, 1.8999, 1.9423, 1.8628, 1.7968, 0, 1.7816, 2.4711, 2.703, 2.4466, 2.6806, 2.9514, 3.3887, 3.1264, 3.3109, 3.968, 4.124, 4.3753, 4.8662, 4.8123, 4.6422, 4.8715, 5.5444, 6.1202, 7.0597, 7.646]
+    line [0.0488, 0.0373, 0.0189, 0.004, 0.0035, 0.0201, 0.0234, 0.0285, 0.0286, 0.0312, 0.0363, 0.036, 0.0409, 0.04, 0.0397, 0.031, 0, 0.0354, 0.0236, 0.0287, 0.022, 0.0263, 0.0303, 0.0471, 0.0362, 0.1277, 0.2843, 0.3148, 0.2479, 0.2662, 0.2328, 0.2275, 0.1995, 0.2505, 0.2479, 0.2994, 0.1595]
+    line [0.2605, 0.2465, 0.2218, 0.1718, 0.1909, 0.2392, 0.2596, 0.2819, 0.2957, 0.3011, 0.3121, 0.3153, 0.3365, 0.3287, 0.3456, 0.3102, 0, 0.3221, 0.2755, 0.2992, 0.2774, 0.3236, 0.433, 0.4546, 0.4912, 0.4863, 0.8451, 0.9137, 0.9632, 1.0681, 1.0754, 1.0009, 1.035, 1.0973, 1.2014, 1.3336, 1.3913]
+``` 
+$${\color{#808080}Total \space Linux \space (reference)\space\space\space
+\color{#51a8a6}English\space\space\space
+\color{#f92800}Chinese\space\space\space
+\color{#f9a900}Other\space\space\space}$$
+
+<br/>
+

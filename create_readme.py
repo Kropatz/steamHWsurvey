@@ -2521,7 +2521,157 @@ legend_str = """$${\color{#DB4105} HalfLife \space 3 \space confirmed \space\spa
 
 readme_content = readme_content + cur_stats_txt + "``` \n" + legend_str + "\n\n<br/>\n\n"
 
+# ---------------------------------------------------------------------------------------------
+# %% 7 Linux penetration by language group
+# ---------------------------------------------------------------------------------------------
+readme_content = readme_content + "\n## Linux: Penetration by Language Group \n"
+readme_content = (
+    readme_content
+    + """\n Of all Steam users in a given language group, what % use Linux. Computed as P(Linux|language) = P(language|Linux) * P(Linux) / P(language). Total Linux marketshare shown in grey as reference (note: Mermaid xychart-beta does not support dashed lines). \n\n"""
+)
 
-# %% 7 - Save to File
+# --- Main df: total language shares P(language) ---
+lang_main_df = df[df["category"] == "Language"].copy()
+
+lang_main_en_df = (
+    lang_main_df[lang_main_df["name"] == "English"]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_english"})
+)
+lang_main_zh_df = (
+    lang_main_df[lang_main_df["name"].str.contains("Chinese")]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_chinese"})
+)
+lang_main_total_df = (
+    lang_main_df.groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_lang_total"})
+)
+
+# --- Linux platform: language fractions within Linux P(language|Linux) ---
+lang_linux_df = df_platform[
+    (df_platform["platform"] == "linux") & (df_platform["category"] == "Language (Linux)")
+].copy()
+
+lang_linux_en_df = (
+    lang_linux_df[lang_linux_df["name"] == "English"]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_en_given_linux"})
+)
+lang_linux_zh_df = (
+    lang_linux_df[lang_linux_df["name"].str.contains("Chinese")]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_zh_given_linux"})
+)
+lang_linux_total_df = (
+    lang_linux_df.groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_linux_lang_total"})
+)
+
+# --- Total Linux share P(Linux) ---
+linux_total_share_df = (
+    os_grp_df[os_grp_df["OS"] == "Linux"][["date", "percentage"]]
+    .rename(columns={"percentage": "p_linux"})
+)
+
+# --- Merge all on date ---
+lang_df = linux_total_share_df.copy()
+lang_df = lang_df.merge(lang_main_en_df, on="date", how="left")
+lang_df = lang_df.merge(lang_main_zh_df, on="date", how="left")
+lang_df = lang_df.merge(lang_main_total_df, on="date", how="left")
+lang_df = lang_df.merge(lang_linux_en_df, on="date", how="left")
+lang_df = lang_df.merge(lang_linux_zh_df, on="date", how="left")
+lang_df = lang_df.merge(lang_linux_total_df, on="date", how="left")
+
+# Other = everything that is not English or Chinese
+lang_df["p_other"] = (
+    lang_df["p_lang_total"] - lang_df["p_english"].fillna(0) - lang_df["p_chinese"].fillna(0)
+)
+lang_df["p_other_given_linux"] = (
+    lang_df["p_linux_lang_total"]
+    - lang_df["p_en_given_linux"].fillna(0)
+    - lang_df["p_zh_given_linux"].fillna(0)
+)
+
+# Compute P(Linux | language) = P(language | Linux) * P(Linux) / P(language)
+lang_df["linux_pen_english"] = np.where(
+    lang_df["p_english"] > 0,
+    lang_df["p_en_given_linux"] * lang_df["p_linux"] / lang_df["p_english"],
+    np.nan,
+)
+lang_df["linux_pen_chinese"] = np.where(
+    lang_df["p_chinese"] > 0,
+    lang_df["p_zh_given_linux"] * lang_df["p_linux"] / lang_df["p_chinese"],
+    np.nan,
+)
+lang_df["linux_pen_other"] = np.where(
+    lang_df["p_other"] > 0,
+    lang_df["p_other_given_linux"] * lang_df["p_linux"] / lang_df["p_other"],
+    np.nan,
+)
+
+# Quarterly averages
+lang_df["quarter"] = lang_df["date"].dt.to_period("Q").astype(str).str.slice(2, 6)
+lang_quarter_df = (
+    lang_df.groupby("quarter")[
+        ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_other"]
+    ]
+    .mean()
+    .reset_index()
+)
+
+### add title and x-axis & y-axis info
+cur_stats_txt = (
+    "```mermaid\n"
+    + """---
+config:
+    xyChart:
+        width: 1400
+        height: 500
+
+    themeVariables:
+        xyChart:
+            plotColorPalette: "#808080,#51a8a6,#f92800,#f9a900"
+
+---
+"""
+)
+
+cur_stats_txt = (
+    cur_stats_txt
+    + """
+xychart-beta
+    title "Linux penetration by language group: of all [language] Steam users, % on Linux"
+"""
+)
+cur_stats_txt = (
+    cur_stats_txt
+    + "    x-axis "
+    + str([i for i in lang_quarter_df["quarter"].unique()]).replace("'", "")
+    + "\n"
+)
+cur_stats_txt = cur_stats_txt + '    y-axis "%" \n'
+
+for col in ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_other"]:
+    col_stats_list = []
+    for q in lang_quarter_df["quarter"].unique():
+        q_df = lang_quarter_df[lang_quarter_df["quarter"] == q]
+        if len(q_df) > 0:
+            raw = q_df[col].values[0]
+            val = 0 if (raw != raw) else float(raw) * 100  # nan → 0
+        else:
+            val = 0
+        col_stats_list.append(round(val, 4))
+    cur_stats_txt = cur_stats_txt + "    line " + str(col_stats_list) + "\n"
+
+legend_str = """$${\color{#808080}Total \space Linux \space (reference)\space\space\space
+\color{#51a8a6}English\space\space\space
+\color{#f92800}Chinese\space\space\space
+\color{#f9a900}Other\space\space\space}$$"""
+
+readme_content = readme_content + cur_stats_txt + "``` \n" + legend_str + "\n\n<br/>\n\n"
+
+
+# %% 8 - Save to File
 with open("README.md", "w", encoding="utf-8") as f:
     f.write(readme_content)
