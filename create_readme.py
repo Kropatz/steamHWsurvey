@@ -2543,6 +2543,11 @@ lang_main_zh_df = (
     .groupby("date")["percentage"].sum().reset_index()
     .rename(columns={"percentage": "p_chinese"})
 )
+lang_main_de_df = (
+    lang_main_df[lang_main_df["name"] == "German"]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_german"})
+)
 lang_main_total_df = (
     lang_main_df.groupby("date")["percentage"].sum().reset_index()
     .rename(columns={"percentage": "p_lang_total"})
@@ -2563,6 +2568,11 @@ lang_linux_zh_df = (
     .groupby("date")["percentage"].sum().reset_index()
     .rename(columns={"percentage": "p_zh_given_linux"})
 )
+lang_linux_de_df = (
+    lang_linux_df[lang_linux_df["name"] == "German"]
+    .groupby("date")["percentage"].sum().reset_index()
+    .rename(columns={"percentage": "p_de_given_linux"})
+)
 lang_linux_total_df = (
     lang_linux_df.groupby("date")["percentage"].sum().reset_index()
     .rename(columns={"percentage": "p_linux_lang_total"})
@@ -2578,19 +2588,25 @@ linux_total_share_df = (
 lang_df = linux_total_share_df.copy()
 lang_df = lang_df.merge(lang_main_en_df, on="date", how="left")
 lang_df = lang_df.merge(lang_main_zh_df, on="date", how="left")
+lang_df = lang_df.merge(lang_main_de_df, on="date", how="left")
 lang_df = lang_df.merge(lang_main_total_df, on="date", how="left")
 lang_df = lang_df.merge(lang_linux_en_df, on="date", how="left")
 lang_df = lang_df.merge(lang_linux_zh_df, on="date", how="left")
+lang_df = lang_df.merge(lang_linux_de_df, on="date", how="left")
 lang_df = lang_df.merge(lang_linux_total_df, on="date", how="left")
 
-# Other = everything that is not English or Chinese
+# Other = everything that is not English, Chinese, or German
 lang_df["p_other"] = (
-    lang_df["p_lang_total"] - lang_df["p_english"].fillna(0) - lang_df["p_chinese"].fillna(0)
+    lang_df["p_lang_total"]
+    - lang_df["p_english"].fillna(0)
+    - lang_df["p_chinese"].fillna(0)
+    - lang_df["p_german"].fillna(0)
 )
 lang_df["p_other_given_linux"] = (
     lang_df["p_linux_lang_total"]
     - lang_df["p_en_given_linux"].fillna(0)
     - lang_df["p_zh_given_linux"].fillna(0)
+    - lang_df["p_de_given_linux"].fillna(0)
 )
 
 # Compute P(Linux | language) = P(language | Linux) * P(Linux) / P(language)
@@ -2604,6 +2620,11 @@ lang_df["linux_pen_chinese"] = np.where(
     lang_df["p_zh_given_linux"] * lang_df["p_linux"] / lang_df["p_chinese"],
     np.nan,
 )
+lang_df["linux_pen_german"] = np.where(
+    lang_df["p_german"] > 0,
+    lang_df["p_de_given_linux"] * lang_df["p_linux"] / lang_df["p_german"],
+    np.nan,
+)
 lang_df["linux_pen_other"] = np.where(
     lang_df["p_other"] > 0,
     lang_df["p_other_given_linux"] * lang_df["p_linux"] / lang_df["p_other"],
@@ -2614,7 +2635,7 @@ lang_df["linux_pen_other"] = np.where(
 lang_df["quarter"] = lang_df["date"].dt.to_period("Q").astype(str).str.slice(2, 6)
 lang_quarter_df = (
     lang_df.groupby("quarter")[
-        ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_other"]
+        ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_german", "linux_pen_other"]
     ]
     .mean()
     .reset_index()
@@ -2631,7 +2652,7 @@ config:
 
     themeVariables:
         xyChart:
-            plotColorPalette: "#808080,#51a8a6,#f92800,#f9a900"
+            plotColorPalette: "#808080,#51a8a6,#f92800,#d92080,#f9a900"
 
 ---
 """
@@ -2652,7 +2673,7 @@ cur_stats_txt = (
 )
 cur_stats_txt = cur_stats_txt + '    y-axis "%" \n'
 
-for col in ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_other"]:
+for col in ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_german", "linux_pen_other"]:
     col_stats_list = []
     for q in lang_quarter_df["quarter"].unique():
         q_df = lang_quarter_df[lang_quarter_df["quarter"] == q]
@@ -2667,6 +2688,7 @@ for col in ["p_linux", "linux_pen_english", "linux_pen_chinese", "linux_pen_othe
 legend_str = """$${\color{#808080}Total \space Linux \space (reference)\space\space\space
 \color{#51a8a6}English\space\space\space
 \color{#f92800}Chinese\space\space\space
+\color{#d92080}German\space\space\space
 \color{#f9a900}Other\space\space\space}$$"""
 
 readme_content = readme_content + cur_stats_txt + "``` \n" + legend_str + "\n\n<br/>\n\n"
