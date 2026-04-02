@@ -22,7 +22,7 @@
 
 * After an initial release of December 2022 hardware data that showed [some odd discrepancies](https://archive.is/XyyNP), Steam reuploaded a revised dataset. The current shs.csv uses the revised data (original data can be found in first commit for December 2022 data)
 
-* Data from March 2023 (= posted in April 2023 on the steam website) saw unusual spikes in several areas (like growth in "Language: Simplified Chinese" or "Intel CPU" share amongst others). The reason was never officially addressed (but may be due to similar reasons as pointed in official statements by steam below) nor was the data updated during the span April on the website. With the April data update in May, these outliers have seemed to be mitigated and numbers are closer to prior months. Similar for [Feb 2026 data](https://github.com/jdegene/steamHWsurvey/issues/12), solved by averaging Jan/March 2026.
+* Data from March 2023 (= posted in April 2023 on the steam website) saw unusual spikes in several areas (like growth in "Language: Simplified Chinese" or "Intel CPU" share amongst others). The reason was never officially addressed (but may be due to similar reasons as pointed in official statements by steam below) nor was the data updated during the span April on the website. With the April data update in May, these outliers have seemed to be mitigated and numbers are closer to prior months.
 
 * As mentioned by [likudo](https://github.com/jdegene/steamHWsurvey/issues/4) the raw data omits the category "others". Creating a category sum can as such create misleading results. Refer to the platform specific data instead.
 
@@ -1093,11 +1093,11 @@ xychart-beta
     title "Linux penetration by language group: of all [language] Steam users, % on Linux"
     x-axis [17Q1, 17Q2, 17Q3, 17Q4, 18Q1, 18Q2, 18Q3, 18Q4, 19Q1, 19Q2, 19Q3, 19Q4, 20Q1, 20Q2, 20Q3, 20Q4, 21Q1, 21Q2, 21Q3, 21Q4, 22Q1, 22Q2, 22Q3, 22Q4, 23Q1, 23Q2, 23Q3, 23Q4, 24Q1, 24Q2, 24Q3, 24Q4, 25Q1, 25Q2, 25Q3, 25Q4, 26Q1]
     y-axis "%" 
-    line [0.963, 0.8423, 0.7295, 0.3467, 0.3398, 0.5935, 0.6636, 0.7792, 0.7991, 0.8058, 0.8068, 0.8207, 0.91, 0.903, 0.8788, 0.8208, 0.8494, 0.8395, 1.0026, 1.1013, 0.9542, 1.117, 1.2395, 1.4386, 1.1854, 1.3224, 1.7839, 1.7184, 1.879, 2.0876, 1.971, 1.9549, 1.9352, 2.4977, 2.7344, 3.2606, 2.7246]
-    line [1.7616, 1.7434, 1.6849, 1.6704, 1.6118, 1.4019, 1.4892, 1.7042, 1.836, 1.762, 1.7087, 1.7726, 1.8999, 1.9423, 1.8628, 1.7968, 0, 1.7816, 2.4711, 2.703, 2.4466, 2.6806, 2.9514, 3.3887, 3.1264, 3.3109, 3.968, 4.124, 4.3753, 4.8662, 4.8123, 4.6422, 4.8715, 5.5444, 6.1202, 7.0597, 7.646]
-    line [0.0488, 0.0373, 0.0189, 0.004, 0.0035, 0.0201, 0.0234, 0.0285, 0.0286, 0.0312, 0.0363, 0.036, 0.0409, 0.04, 0.0397, 0.031, 0, 0.0354, 0.0236, 0.0287, 0.022, 0.0263, 0.0303, 0.0471, 0.0362, 0.1277, 0.2843, 0.3148, 0.2479, 0.2662, 0.2328, 0.2275, 0.1995, 0.2505, 0.2479, 0.2994, 0.1595]
-    line [0.5013, 0.4985, 0.4686, 0.3689, 0.4258, 0.4625, 0.5347, 0.5719, 0.6106, 0.5928, 0.7048, 0.653, 0.6712, 0.6559, 0.7288, 0.6722, 0, 0.6845, 0.6593, 0.6624, 0.7208, 0.8551, 1.2049, 1.4544, 1.3023, 1.3549, 2.1666, 2.209, 2.3978, 2.6086, 2.5875, 2.4883, 2.6168, 2.6755, 2.9356, 3.2746, 3.5383]
-    line [0.2371, 0.2218, 0.1965, 0.1536, 0.1678, 0.2154, 0.2305, 0.2508, 0.2615, 0.2694, 0.2707, 0.2791, 0.3016, 0.2959, 0.3068, 0.273, 0, 0.2839, 0.2409, 0.2645, 0.2357, 0.2742, 0.3603, 0.3655, 0.4176, 0.4138, 0.7251, 0.7911, 0.8297, 0.927, 0.9392, 0.8666, 0.8943, 0.956, 1.0489, 1.1557, 1.2065]
+    line [0.963, 0.8423, 0.7295, 0.3467, 0.3398, 0.5935, 0.6636, 0.7792, 0.7991, 0.8058, 0.8068, 0.8207, 0.91, 0.903, 0.8788, 0.8208, 0.8494, 0.8395, 1.0026, 1.1013, 0.9542, 1.117, 1.2395, 1.4386, 1.1854, 1.3224, 1.7839, 1.7184, 1.879, 2.0876, 1.971, 1.9549, 1.9352, 2.4977, 2.7344, 3.2606, 3.6172]
+    line [1.7616, 1.7434, 1.6849, 1.6704, 1.6118, 1.4019, 1.4892, 1.7042, 1.836, 1.762, 1.7087, 1.7726, 1.8999, 1.9423, 1.8628, 1.7968, 0, 1.7816, 2.4711, 2.703, 2.4466, 2.6806, 2.9514, 3.3887, 3.1264, 3.3109, 3.968, 4.124, 4.3753, 4.8662, 4.8123, 4.6422, 4.8715, 5.5444, 6.1202, 7.0597, 7.8784]
+    line [0.0488, 0.0373, 0.0189, 0.004, 0.0035, 0.0201, 0.0234, 0.0285, 0.0286, 0.0312, 0.0363, 0.036, 0.0409, 0.04, 0.0397, 0.031, 0, 0.0354, 0.0236, 0.0287, 0.022, 0.0263, 0.0303, 0.0471, 0.0362, 0.1277, 0.2843, 0.3148, 0.2479, 0.2662, 0.2328, 0.2275, 0.1995, 0.2505, 0.2479, 0.2994, 0.268]
+    line [0.5013, 0.4985, 0.4686, 0.3689, 0.4258, 0.4625, 0.5347, 0.5719, 0.6106, 0.5928, 0.7048, 0.653, 0.6712, 0.6559, 0.7288, 0.6722, 0, 0.6845, 0.6593, 0.6624, 0.7208, 0.8551, 1.2049, 1.4544, 1.3023, 1.3549, 2.1666, 2.209, 2.3978, 2.6086, 2.5875, 2.4883, 2.6168, 2.6755, 2.9356, 3.2746, 3.7399]
+    line [0.2371, 0.2218, 0.1965, 0.1536, 0.1678, 0.2154, 0.2305, 0.2508, 0.2615, 0.2694, 0.2707, 0.2791, 0.3016, 0.2959, 0.3068, 0.273, 0, 0.2839, 0.2409, 0.2645, 0.2357, 0.2742, 0.3603, 0.3655, 0.4176, 0.4138, 0.7251, 0.7911, 0.8297, 0.927, 0.9392, 0.8666, 0.8943, 0.956, 1.0489, 1.1557, 1.2821]
 ``` 
 $${\color{#808080}Total \space Linux \space (reference)\space\space\space
 \color{#51a8a6}English\space\space\space
